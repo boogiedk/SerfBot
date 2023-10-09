@@ -1,6 +1,7 @@
 ﻿module SerfBot.Types
 
 open Funogram.Telegram
+open Funogram.Telegram.Types
 
 type CityCoordinates =
     { CityName: string

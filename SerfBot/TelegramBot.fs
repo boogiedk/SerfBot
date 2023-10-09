@@ -1,14 +1,18 @@
 ﻿module SerfBot.TelegramBot
 
+open System.Runtime.CompilerServices
+open ExtCore.Control.Collections
 open Funogram.Api
 open Funogram.Telegram
 open Funogram.Telegram.Bot
 open System.Collections.Generic
+open Funogram.Telegram.Types
 open SerfBot.Log
 open SerfBot.OpenAiApi;
 open SerfBot.Types
 open Telegram.Bot.Types;
-    
+open System.Text.RegularExpressions
+open SerfBot.TelegramApi
 
 type CommandHandler = string -> string
 
@@ -40,7 +44,7 @@ let handleGPTCommand (command: string) =
         $"%s{replayText}"
     | _ -> "Неизвестная команда"
 
-let extractCommand (str: string) = str.Split(" ")[0];
+let extractCommand (str: string) = (str.Split(" ")[0]).Trim().ToLower();
 
 addCommandHandler "ping" handlePingCommand
 addCommandHandler "погода" handleWeatherCommand
@@ -51,6 +55,11 @@ let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
     |> api ctx.Config
     |> Async.Ignore
     |> Async.Start  
+
+let processCommand2 (ctx: UpdateContext, command: MessageReplayCommand) =
+        sendReplayMessageFormatted command.ReplayText ParseMode.Markdown ctx.Config api command.Chat.Id command.MessageId
+        |> Async.RunSynchronously
+        |> ignore
 
 let isValidUser (userId: int64) =
     if Array.contains userId Configuration.config.UserIds then Some ()
@@ -63,12 +72,12 @@ let updateArrived (ctx: UpdateContext) =
         match isValidUser user.Id with
         | Some () ->
             logInfo $"Message from user {Option.get user.Username} received: {Option.get text}"
-            let lowerText = text.Value.ToLower()
-            let words = extractCommand lowerText
-            match commandHandlers.TryGetValue words with
+            let userMessage = text.Value;
+            let command = extractCommand userMessage
+            match commandHandlers.TryGetValue command with
             | true, handler ->
-                let replyText = handler lowerText
-                processCommand(ctx, { Chat = chat; MessageId = messageId; Text = text; ReplayText = replyText })
+                let replyText = handler userMessage
+                processCommand2(ctx, { Chat = chat; MessageId = messageId; Text = text; ReplayText = replyText; })
             | _ -> ()
         | None ->
             sprintf "Authorize error." |> logInfo

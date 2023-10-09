@@ -2,10 +2,14 @@
 
 open OpenAI_API
 open OpenAI_API.Models
+open SerfBot.Log
+
+let context = "Ты персональный помощник-бот в telegram. Чаще всего тебе нужно генерировать C#, F# или SQL код"
 
 let conversationGPT userText =
     let openApiClient = OpenAIAPI(Configuration.config.OpenAiApiToken)
-    let conversation = openApiClient.Chat.CreateConversation();
+    let conversation = openApiClient.Chat.CreateConversation()
+    conversation.AppendSystemMessage(context)
     conversation.AppendUserInput(userText);
     conversation.RequestParameters.Temperature <- 0.9;
     conversation.RequestParameters.MaxTokens <- 1024;
@@ -14,8 +18,13 @@ let conversationGPT userText =
 
 let gptAnswer userQuestion =
     async {
-    let conv = conversationGPT userQuestion
-    let! result = conv.GetResponseFromChatbotAsync() |> Async.AwaitTask
-    return result
-   }
-    
+        try
+            let conv = conversationGPT userQuestion
+            let! result = conv.GetResponseFromChatbotAsync() |> Async.AwaitTask
+            return result
+        with
+            | ex ->
+                let errorText = sprintf "Exception text: %s" (ex.Message)
+                logErr errorText
+                return errorText
+    }  

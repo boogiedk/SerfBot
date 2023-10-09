@@ -11,6 +11,7 @@
         </Content>
         <Compile Include="Log.fs" />
         <Compile Include="Types.fs" />
+        <Compile Include="TelegramApi.fs" />
         <Compile Include="Configuration.fs" />
         <Compile Include="WeatherApi.fs" />
         <Compile Include="OpenAiApi.fs" />
