@@ -1,4 +1,4 @@
-name: Docker Deploy
+name: CI/CD Pipline
 
 on:
   pull_request:
@@ -12,13 +12,40 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}    
 
     - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/serf-bot:latest
+        
+    - name: Install Expect
+      run: sudo apt-get install -y expect       
+        
+    - name: Deploy to VPS
       env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USERNAME }}
+        VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+        VPS_SSH_PRIVATE_KEY_PASSPHRASE: ${{ secrets.VPS_SSH_PRIVATE_KEY_PASSPHRASE }}
+        APPLICATION_NAME: serf-bot
       run: |
-        docker build -t serf-bot-image .
-        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        docker tag serf-bot-image boogiedk/serf-bot-image:latest
-        docker push boogiedk/serf-bot-image:latest
+        echo "${{ env.VPS_SSH_PRIVATE_KEY }}" > private_key
+        chmod 600 private_key
+        eval "$(ssh-agent -s)"
+        echo "${{ env.VPS_SSH_PRIVATE_KEY_PASSPHRASE }}" | expect -c "spawn ssh-add private_key; expect \"Enter passphrase:\"; send -- \"${{ env.VPS_SSH_PRIVATE_KEY_PASSPHRASE }}\r\"; expect eof"
+        rm -f private_key
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.VPS_USER }}@${{ env.VPS_HOST }} <<-EOF
+          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APPLICATION_NAME }}:latest
+          docker stop ${{ env.APPLICATION_NAME }} || true
+          docker rm ${{ env.APPLICATION_NAME }} || true
+          docker run -d --name ${{ env.APPLICATION_NAME }} -p 3000:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APPLICATION_NAME }}:latest
+        EOF
