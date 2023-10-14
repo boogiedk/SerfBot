@@ -17,11 +17,6 @@ open SerfBot.TelegramApi
 
 type CommandHandler = string -> string
 
-let commandHandlers : Dictionary<string, CommandHandler> = Dictionary()
-
-let addCommandHandler (command: string) (handler: CommandHandler) =
-    commandHandlers.Add(command.ToLower(), handler)
-
 let handlePingCommand (command: string) =
     match command.ToLower() with
     | "ping" -> "pong"
@@ -31,7 +26,8 @@ let handleWeatherCommand (command: string) =
     match command.Split(" ", 2) with
     | [| "погода"; location |] ->
         try
-            let weather = WeatherApi.getWeatherAsync location |> Async.RunSynchronously
+            let weather = WeatherApi.getWeatherAsync location
+                          |> Async.RunSynchronously
             $"Погода в %s{location}: %s{weather}"
         with
         | ex -> sprintf "Ошибка при получении погоды: %s" ex.Message
@@ -41,22 +37,18 @@ let handleWeatherCommand (command: string) =
 let handleGPTCommand (command: string) =
     match command.Split(" ", 2) with
     | [| "гпт"; inputText |] ->
-        let replayText = gptAnswer inputText |> Async.RunSynchronously;
-        $"%s{replayText}"
-    | _ -> "Неизвестная команда"
+        gptAnswer inputText
+        |> Async.RunSynchronously;
+    | _ -> "Неизвестная команда"    
+ 
+let commandHandlers =
+        let handlers = Dictionary()
+        handlers.Add("ping", handlePingCommand)
+        handlers.Add("погода", handleWeatherCommand)
+        handlers.Add("гпт", handleGPTCommand)
+        handlers
 
 let extractCommand (str: string) = (str.Split(" ")[0]).Trim().ToLower();
-
-addCommandHandler "ping" handlePingCommand
-addCommandHandler "погода" handleWeatherCommand
-addCommandHandler "гпт" handleGPTCommand
-
-// obsolet
-//let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
-//   Api.sendMessageReply command.Chat.Id command.ReplayText command.MessageId 
-//    |> api ctx.Config
-//    |> Async.Ignore
-//    |> Async.Start  
 
 let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
         sendReplayMessageFormatted command.ReplayText ParseMode.Markdown ctx.Config api command.Chat.Id command.MessageId

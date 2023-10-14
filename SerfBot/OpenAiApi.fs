@@ -4,7 +4,7 @@ open OpenAI_API
 open OpenAI_API.Models
 open SerfBot.Log
 
-let context = "Ты персональный помощник-бот в telegram. Чаще всего тебе нужно генерировать C#, F# или SQL код"
+let context = "Ты персональный помощник-бот в telegram. Чаще всего тебе нужно генерировать C#, F# или SQL код, но иногда нужно и отвечать на бытовые вопросы."
 
 let conversationGPT userText =
     let openApiClient = OpenAIAPI(Configuration.config.OpenAiApiToken)
@@ -13,7 +13,7 @@ let conversationGPT userText =
     conversation.AppendUserInput(userText);
     conversation.RequestParameters.Temperature <- 0.9;
     conversation.RequestParameters.MaxTokens <- 1024;
-    conversation.Model <- Model.ChatGPTTurbo;
+    conversation.Model <- Model.GPT4;
     conversation;
 
 let gptAnswer userQuestion =
