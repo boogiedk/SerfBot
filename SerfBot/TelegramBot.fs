@@ -40,24 +40,25 @@ let handleGPTCommand (command: string) =
         gptAnswer inputText
         |> Async.RunSynchronously;
     | _ -> "Неизвестная команда"    
- 
+
 let commandHandlers =
-        let handlers = Dictionary()
-        handlers.Add("ping", handlePingCommand)
-        handlers.Add("погода", handleWeatherCommand)
-        handlers.Add("гпт", handleGPTCommand)
-        handlers
+    dict
+        [
+          "ping", handlePingCommand
+          "погода", handleWeatherCommand
+          "гпт", handleGPTCommand
+        ]
 
 let extractCommand (str: string) = (str.Split(" ")[0]).Trim().ToLower();
+
+let isValidUser (userId: int64) =
+    if Array.contains userId Configuration.config.UserIds then Some ()
+    else None
 
 let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
         sendReplayMessageFormatted command.ReplayText ParseMode.Markdown ctx.Config api command.Chat.Id command.MessageId
         |> Async.RunSynchronously
         |> ignore
-
-let isValidUser (userId: int64) =
-    if Array.contains userId Configuration.config.UserIds then Some ()
-    else None
 
 let updateArrived (ctx: UpdateContext) =
     match ctx.Update.Message with
