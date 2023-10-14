@@ -44,8 +44,8 @@ jobs:
         rm -f private_key
         ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.VPS_USER }}@${{ env.VPS_HOST }} <<-EOF
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APPLICATION_NAME }}:latest
-          docker stop ${{ env.APPLICATION_NAME }} || true
-          docker rm ${{ env.APPLICATION_NAME }} || true
-          docker run -d --name ${{ env.APPLICATION_NAME }} -p 3000:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.APPLICATION_NAME }}:latest
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/serf-bot:latest
+          docker stop serf-bot || true
+          docker rm serf-bot || true
+          docker run -d --name serf-bot -p 3000:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/serf-bot:latest
         EOF
