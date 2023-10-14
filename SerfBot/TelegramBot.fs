@@ -39,7 +39,7 @@ let handleWeatherCommand (command: string) =
 
 let handleGPTCommand (command: string) =
     match command.Split(" ", 2) with
-    | [| "gpt"; inputText |] ->
+    | [| "гпт"; inputText |] ->
         let replayText = gptAnswer inputText |> Async.RunSynchronously;
         $"%s{replayText}"
     | _ -> "Неизвестная команда"
@@ -48,7 +48,7 @@ let extractCommand (str: string) = (str.Split(" ")[0]).Trim().ToLower();
 
 addCommandHandler "ping" handlePingCommand
 addCommandHandler "погода" handleWeatherCommand
-addCommandHandler "gpt" handleGPTCommand
+addCommandHandler "гпт" handleGPTCommand
 
 let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
    Api.sendMessageReply command.Chat.Id command.ReplayText command.MessageId 
