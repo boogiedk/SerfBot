@@ -1,5 +1,6 @@
 ﻿module SerfBot.TelegramBot
 
+open System
 open System.Runtime.CompilerServices
 open ExtCore.Control.Collections
 open Funogram.Api
@@ -50,13 +51,14 @@ addCommandHandler "ping" handlePingCommand
 addCommandHandler "погода" handleWeatherCommand
 addCommandHandler "гпт" handleGPTCommand
 
-let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
-   Api.sendMessageReply command.Chat.Id command.ReplayText command.MessageId 
-    |> api ctx.Config
-    |> Async.Ignore
-    |> Async.Start  
+// obsolet
+//let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
+//   Api.sendMessageReply command.Chat.Id command.ReplayText command.MessageId 
+//    |> api ctx.Config
+//    |> Async.Ignore
+//    |> Async.Start  
 
-let processCommand2 (ctx: UpdateContext, command: MessageReplayCommand) =
+let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
         sendReplayMessageFormatted command.ReplayText ParseMode.Markdown ctx.Config api command.Chat.Id command.MessageId
         |> Async.RunSynchronously
         |> ignore
@@ -77,7 +79,7 @@ let updateArrived (ctx: UpdateContext) =
             match commandHandlers.TryGetValue command with
             | true, handler ->
                 let replyText = handler userMessage
-                processCommand2(ctx, { Chat = chat; MessageId = messageId; Text = text; ReplayText = replyText; })
+                processCommand(ctx, { Chat = chat; MessageId = messageId; Text = text; ReplayText = replyText; })
             | _ -> ()
         | None ->
             sprintf "Authorize error." |> logInfo
