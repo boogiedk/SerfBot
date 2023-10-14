@@ -35,7 +35,6 @@ jobs:
         VPS_USER: ${{ secrets.VPS_USERNAME }}
         VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
         VPS_SSH_PRIVATE_KEY_PASSPHRASE: ${{ secrets.VPS_SSH_PRIVATE_KEY_PASSPHRASE }}
-        APPLICATION_NAME: serf-bot
       run: |
         echo "${{ env.VPS_SSH_PRIVATE_KEY }}" > private_key
         chmod 600 private_key
