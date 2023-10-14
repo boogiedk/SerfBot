@@ -42,9 +42,9 @@ jobs:
         echo "${{ env.VPS_SSH_PRIVATE_KEY_PASSPHRASE }}" | expect -c "spawn ssh-add private_key; expect \"Enter passphrase:\"; send -- \"${{ env.VPS_SSH_PRIVATE_KEY_PASSPHRASE }}\r\"; expect eof"
         rm -f private_key
         ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ env.VPS_USER }}@${{ env.VPS_HOST }} <<-EOF
-          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/serf-bot:latest
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker pull ${{ secrets.DOCKER_USERNAME }}/serf-bot:latest
           docker stop serf-bot || true
           docker rm serf-bot || true
-          docker run -d --name serf-bot -p 3000:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/serf-bot:latest
+          docker run -d --name serf-bot -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/serf-bot:latest
         EOF
