@@ -3,36 +3,34 @@
 open ExtCore.Control.Collections
 open SerfBot.OpenAiApi;
 
-let handlePingCommand (command: string) =
-    match command.ToLower() with
-    | "ping" -> "pong"
-    | _ -> "Неизвестная команда"
 
-let handleWeatherCommand (command: string) =
-    match command.Split(" ", 2) with
-    | [| "погода"; location |] ->
+let pingCommand() =
+    "pong"
+
+let handlePingCommand (command: string) = "pong"
+
+let handleWeatherCommand (userText: string) =
         try
-            let weather = WeatherApi.getWeatherAsync location
+            let weather = WeatherApi.getWeatherAsync userText
                           |> Async.RunSynchronously
-            $"Погода в %s{location}: %s{weather}"
+            $"Погода в %s{userText}: %s{weather}"
         with
-        | ex -> sprintf "Ошибка при получении погоды: %s" ex.Message
-        
-    | _ -> "Неизвестная команда"
+        | ex -> sprintf "Ошибка: %s" ex.Message
 
-let handleGPTCommand (command: string) =
-    match command.Split(" ", 2) with
-    | [| "гпт"; inputText |] ->
-        gptAnswer inputText
-        |> Async.RunSynchronously;
-    | _ -> "Неизвестная команда"
+let handleGPTCommand (userText: string) =
+        try
+            gptAnswer userText
+            |> Async.RunSynchronously
+        with
+        | ex -> sprintf "Ошибка: %s" ex.Message
      
-let handleContextCommand(command: string) =
-      match command.Split(" ", 2) with
-      | [| "!context"; inputText |] ->
-        setupContext inputText |> ignore
-        "Контекст сменен"
-      | _ -> "Неизвестная команда"
+let handleContextCommand(userText: string) =
+        try
+            setupContext userText
+            |> ignore
+            "Контекст сменен"
+        with
+        | ex -> sprintf "Ошибка: %s" ex.Message
       
 let commandHandlers =
     dict
