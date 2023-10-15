@@ -10,10 +10,11 @@ open SerfBot.Types
 open SerfBot.TelegramApi
 
 let extractCommand (str: string) =
-    let message = str.Split(" ");
-    let command = message[0].Trim().ToLower()
-    let userMessage = str.Split(" ")[1]
-    (command, userMessage)
+     match str.Split(" ", 2) with
+     | [| command; inputText |] ->
+         (command, inputText)
+     | [| command; |] ->
+         (command, null)
 
 let isValidUser (userId: int64) =
     if Array.contains userId Configuration.config.UserIds then Some ()
