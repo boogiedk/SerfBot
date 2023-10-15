@@ -9,7 +9,10 @@ open SerfBot.Log
 open SerfBot.Types
 open SerfBot.TelegramApi
 
-let extractCommand (str: string) = (str.Split(" ")[0]).Trim().ToLower();
+let extractCommand (str: string) =
+    let command = (str.Split(" ")[0]).Trim().ToLower()
+    let userMessage = (str.Split(" ")[1]).Trim().ToLower()
+    (command, userMessage)
 
 let isValidUser (userId: int64) =
     if Array.contains userId Configuration.config.UserIds then Some ()
@@ -27,8 +30,7 @@ let updateArrived (ctx: UpdateContext) =
         match isValidUser user.Id with
         | Some () ->
             logInfo $"Message from user {Option.get user.Username} received: {Option.get text}"
-            let userMessage = text.Value;
-            let command = extractCommand userMessage
+            let command, userMessage = extractCommand text.Value
             match Commands.commandHandlers.TryGetValue command with
             | true, handler ->
                 let replyText = handler userMessage
