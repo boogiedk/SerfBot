@@ -8,7 +8,6 @@ open SerfBot.Log
 open SerfBot.TelegramBot
 open Types
 open Serilog
-open Log;
 
 module Program = 
 

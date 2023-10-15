@@ -4,12 +4,22 @@ open OpenAI_API
 open OpenAI_API.Models
 open SerfBot.Log
 
-let context = "Ты персональный помощник-бот в telegram. Чаще всего тебе нужно генерировать C#, F# или SQL код, но иногда нужно и отвечать на бытовые вопросы."
+let mutable currentContext = None
+
+let setupContext (newContext: string) =
+    match newContext with
+    | null -> 
+        match currentContext with
+        | None -> "Ты персональный помощник-бот в telegram. Чаще всего тебе нужно генерировать C#, F# или SQL код, но иногда нужно и отвечать на бытовые вопросы."
+        | Some x -> x
+    | _ -> 
+        currentContext <- Some newContext
+        newContext
 
 let conversationGPT userText =
     let openApiClient = OpenAIAPI(Configuration.config.OpenAiApiToken)
     let conversation = openApiClient.Chat.CreateConversation()
-    conversation.AppendSystemMessage(context)
+    conversation.AppendSystemMessage(Option.get currentContext)
     conversation.AppendUserInput(userText);
     conversation.RequestParameters.Temperature <- 0.9;
     conversation.RequestParameters.MaxTokens <- 1024;

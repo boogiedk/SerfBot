@@ -15,6 +15,7 @@
         <Compile Include="Configuration.fs" />
         <Compile Include="WeatherApi.fs" />
         <Compile Include="OpenAiApi.fs" />
+        <Compile Include="Commands.fs" />
         <Compile Include="TelegramBot.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
