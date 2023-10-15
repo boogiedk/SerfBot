@@ -10,8 +10,9 @@ open SerfBot.Types
 open SerfBot.TelegramApi
 
 let extractCommand (str: string) =
-    let command = (str.Split(" ")[0]).Trim().ToLower()
-    let userMessage = (str.Split(" ")[1]).Trim().ToLower()
+    let message = str.Split(" ");
+    let command = message[0].Trim().ToLower()
+    let userMessage = str.Split(" ")[1]
     (command, userMessage)
 
 let isValidUser (userId: int64) =
