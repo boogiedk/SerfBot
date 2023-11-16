@@ -31,13 +31,21 @@ let handleContextCommand(userText: string) =
             "Контекст сменен"
         with
         | ex -> sprintf "Ошибка: %s" ex.Message
+
+let handleVisionCommand (imageLink: string) =
+        try
+            descriptionAnalyzedImage imageLink
+            |> Async.RunSynchronously
+        with
+        | ex -> sprintf "Ошибка: %s" ex.Message
       
 let commandHandlers =
     dict
         [
-          "ping", handlePingCommand
+          "!ping", handlePingCommand
           "погода", handleWeatherCommand
           "гпт", handleGPTCommand
           "!context", handleContextCommand
+          "!vision", handleVisionCommand
         ]
 
