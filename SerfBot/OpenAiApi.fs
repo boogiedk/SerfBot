@@ -7,6 +7,7 @@ open OpenAI.ObjectModels.RequestModels
 open SerfBot.Types
 open OpenAI.Chat
 open System
+open Log
 
 
 let defaultContext = "Ты персональный помощник-бот в telegram. Чаще всего тебе нужно генерировать C#, F# или SQL код, но иногда нужно и отвечать на бытовые вопросы."
@@ -53,13 +54,19 @@ let gptAnswer userQuestion =
                       completionResult.Choices |> Seq.head |> fun c -> c.Message.Content
                   else
                       match completionResult.Error with
-                      | null -> raise (Exception("Unknown Error"))
-                      | error -> sprintf "%s: %s" error.Code error.Message
+                      | null ->
+                          "Unknown Error" |> logInfo
+                          raise (Exception("Unknown Error"))
+                      | error ->
+                          $"{error.Code} {error.Message}" |> logInfo
+                          sprintf "%s: %s" error.Code error.Message
 
             return result
 
         with
-        | ex -> return ex.Message
+        | ex ->
+            ex.Message |> logInfo
+            return ex.Message
     }
  
 let descriptionAnalyzedImage imageLink =
@@ -88,5 +95,7 @@ let descriptionAnalyzedImage imageLink =
             return answer
             
         with
-        | ex -> return ex.Message.ToString()
+        | ex ->
+            ex.Message.ToString() |> logInfo
+            return ex.Message.ToString()
     }    
