@@ -69,18 +69,18 @@ let gptAnswer userQuestion =
             return ex.Message
     }
  
-let descriptionAnalyzedImage imageLink =
+let descriptionAnalyzedImage userText base64Img =
     async {
         try
             let api = OpenAIClient(Configuration.config.OpenAiApiToken)
-
+            let userText2 = if userText == null then "Что на фото?" else userText
             let messages =
                 [
                     Message(Role.System, Option.get currentContext)
                     Message(Role.User,
                             [
-                                Content(ContentType.Text, "Что на этой картинке?")
-                                Content(ContentType.ImageUrl, imageLink)
+                                Content(ContentType.Text, userText2)
+                                Content(ContentType.ImageUrl, $"data:image/jpeg;base64,{base64Img}")
                             ])
                 ]
             

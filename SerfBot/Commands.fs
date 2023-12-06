@@ -8,8 +8,8 @@ let commandHandler command =
      try
         match command with
            | Ping -> "pong"
-           | Vision (imageLink, userText) ->
-                   descriptionAnalyzedImage imageLink
+           | Vision (userText, base64Img) ->
+                   descriptionAnalyzedImage userText base64Img
                    |> Async.RunSynchronously
            | Context userText ->
                    setupContext userText
@@ -19,8 +19,9 @@ let commandHandler command =
                    gptAnswer userText
                    |> Async.RunSynchronously
            | Weather city ->
-                   let weather = WeatherApi.getWeatherAsync city |> Async.RunSynchronously
+                   let weather = WeatherApi.getWeatherAsync city
+                                 |> Async.RunSynchronously
                    $"Погода в %s{city}: %s{weather}"
-           | _ -> "Некорректная команда для GPT"
+           | _ -> "Некорректная команда"
          with
             | ex -> sprintf "Ошибка: %s" ex.Message

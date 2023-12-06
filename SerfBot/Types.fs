@@ -31,13 +31,6 @@ type ApplicationConfiguration = {
     UserIds: int64[]
 }
 
-type CommandHandler = string -> string
-
-type Commands = {
-    Name: string
-    Handler: CommandHandler
-}
-
 type Command =
     | Ping
     | Question of string
