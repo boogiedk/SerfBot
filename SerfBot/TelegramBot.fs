@@ -25,20 +25,44 @@ let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
         |> Async.RunSynchronously
         |> ignore
 
-let updateArrived (ctx: UpdateContext) =
-    match ctx.Update.Message with
-    | Some { MessageId = messageId; Chat = chat; Text = text } ->
-        let user = ctx.Update.Message.Value.From.Value
-        match isValidUser user.Id with
-        | Some () ->
-            logInfo $"Message from user {Option.get user.Username} received: {Option.get text}"
-            let command, userMessage = extractCommand text.Value
-            match Commands.commandHandlers.TryGetValue command with
-            | true, handler ->
-                let replyText = handler userMessage
-                processCommand(ctx, { Chat = chat; MessageId = messageId; Text = text; ReplayText = replyText; })
+// obsolet
+//let updateArrived (ctx: UpdateContext) =
+//    match ctx.Update.Message with
+//    | Some { MessageId = messageId; Chat = chat; Text = text; Photo = photo; Voice = voice } ->
+//        let user = ctx.Update.Message.Value.From.Value
+//        match isValidUser user.Id with
+//        | Some () ->
+//            logInfo $"Message from user {Option.get user.Username} received: {Option.get text}"
+//            let command, userMessage = extractCommand text.Value
+//            match Commands.commandHandlers.TryGetValue command with
+//            | true, handler ->
+//                let replyText = handler userMessage
+//                processCommand(ctx, { Chat = chat; MessageId = messageId; Text = text; ReplayText = replyText; })
+//            | _ -> ()
+//        | None ->
+//            sprintf "Authorize error." |> logInfo
+//    | _ -> ()
+
+
+let updateArrivedMessage (ctx: UpdateContext) =
+     match ctx.Update.Message with
+        | Some { MessageId = messageId; Chat = chat; Text = text; Photo = photo } ->
+            let user = ctx.Update.Message.Value.From.Value
+            match isValidUser user.Id with
+            | Some () ->
+                logInfo $"Message from user {Option.get user.Username} received: {Option.get text}"
+                let command, userMessage = extractCommand text.Value
+                let commandType =
+                    match command with
+                    | "!ping" -> Ping
+                    | "погода" -> Weather userMessage
+                    | "!context" -> Context userMessage
+                    | "!vision" -> Vision (userMessage, "test")
+                    | "гпт" -> Question userMessage
+                    | _ -> Other userMessage
+                    
+                let replyText = Commands.commandHandler commandType
+                processCommand(ctx, { Chat = chat; MessageId = messageId; Text = text; ReplayText = replyText })
             | _ -> ()
-        | None ->
-            sprintf "Authorize error." |> logInfo
-    | _ -> ()
-    
+        | None -> sprintf "Authorize error." |> logInfo
+        | _ -> ()

@@ -38,3 +38,11 @@ type Commands = {
     Handler: CommandHandler
 }
 
+type Command =
+    | Ping
+    | Question of string
+    | Context of string
+    | Vision of string * string
+    | Weather of string
+    | Other of string
+

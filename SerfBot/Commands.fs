@@ -2,50 +2,25 @@
 
 open ExtCore.Control.Collections
 open SerfBot.OpenAiApi;
+open SerfBot.Types
 
-
-let pingCommand() =
-    "pong"
-
-let handlePingCommand (command: string) = "pong"
-
-let handleWeatherCommand (userText: string) =
-        try
-            let weather = WeatherApi.getWeatherAsync userText
-                          |> Async.RunSynchronously
-            $"Погода в %s{userText}: %s{weather}"
-        with
-        | ex -> sprintf "Ошибка: %s" ex.Message
-
-let handleGPTCommand (userText: string) =
-        try
-            gptAnswer userText
-            |> Async.RunSynchronously
-        with
-        | ex -> sprintf "Ошибка: %s" ex.Message
-     
-let handleContextCommand(userText: string) =
-        try
-            setupContext userText
-            |> ignore
-            "Контекст сменен"
-        with
-        | ex -> sprintf "Ошибка: %s" ex.Message
-
-let handleVisionCommand (imageLink: string) =
-        try
-            descriptionAnalyzedImage imageLink
-            |> Async.RunSynchronously
-        with
-        | ex -> sprintf "Ошибка: %s" ex.Message
-      
-let commandHandlers =
-    dict
-        [
-          "!ping", handlePingCommand
-          "погода", handleWeatherCommand
-          "гпт", handleGPTCommand
-          "!context", handleContextCommand
-          "!vision", handleVisionCommand
-        ]
-
+let commandHandler command =
+     try
+        match command with
+           | Ping -> "pong"
+           | Vision (imageLink, userText) ->
+                   descriptionAnalyzedImage imageLink
+                   |> Async.RunSynchronously
+           | Context userText ->
+                   setupContext userText
+                   |> ignore
+                   "Контекст сменен"
+           | Question userText ->
+                   gptAnswer userText
+                   |> Async.RunSynchronously
+           | Weather city ->
+                   let weather = WeatherApi.getWeatherAsync city |> Async.RunSynchronously
+                   $"Погода в %s{city}: %s{weather}"
+           | _ -> "Некорректная команда для GPT"
+         with
+            | ex -> sprintf "Ошибка: %s" ex.Message
