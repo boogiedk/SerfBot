@@ -59,11 +59,11 @@ let updateArrivedMessage (ctx: UpdateContext) =
         | Some { MessageId = messageId; Chat = chat; Text = text; Photo = photo; Caption = caption } ->
             let user = ctx.Update.Message.Value.From.Value
             
-            let base64Img = if photo.IsSome then handleFiles photo.Value[0].FileId ctx else ""
+            let base64Img = if photo.IsSome then handleFiles (Array.last photo.Value).FileId ctx else ""
             let message = if text.IsSome then text.Value elif caption.IsSome then caption.Value else ""
             match isValidUser user.Id with
             | Some () ->
-                logInfo $"Message from user {Option.get user.Username} received: " //{Option.get text}
+                logInfo $"Message from user {Option.get user.Username} received: {message}"
                 let command, userMessage = extractCommand message
                 let commandType =
                     match command with
