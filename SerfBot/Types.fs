@@ -1,7 +1,6 @@
 ﻿module SerfBot.Types
 
 open Funogram.Telegram
-open Funogram.Telegram.Types
 
 type CityCoordinates =
     { CityName: string
@@ -31,4 +30,12 @@ type ApplicationConfiguration = {
     OpenAiApiToken: string
     UserIds: int64[]
 }
+
+type Command =
+    | Ping
+    | Question of string
+    | Context of string
+    | Vision of string * string
+    | Weather of string
+    | Other of string
 

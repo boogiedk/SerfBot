@@ -7,6 +7,7 @@ WORKDIR /src
 COPY ["SerfBot/SerfBot.fsproj", "SerfBot/"]
 RUN dotnet restore "SerfBot/SerfBot.fsproj"
 COPY . .
+
 WORKDIR "/src/SerfBot"
 RUN dotnet build "SerfBot.fsproj" -c Release -o /app/build
 

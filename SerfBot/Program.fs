@@ -8,7 +8,6 @@ open SerfBot.Log
 open SerfBot.TelegramBot
 open Types
 open Serilog
-open Log;
 
 module Program = 
 
@@ -24,7 +23,7 @@ module Program =
         let! _ = Api.deleteWebhookBase () |> api telegramBotConfig
       
         logInfo "SerfBot start"
-        return! startBot telegramBotConfig updateArrived None
+        return! startBot telegramBotConfig updateArrivedMessage None
       } |> Async.RunSynchronously
       
       logInfo "SefBot stopped"
