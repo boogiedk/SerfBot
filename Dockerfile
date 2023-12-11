@@ -7,6 +7,9 @@ WORKDIR /src
 COPY ["SerfBot/SerfBot.fsproj", "SerfBot/"]
 RUN dotnet restore "SerfBot/SerfBot.fsproj"
 COPY . .
+
+COPY /home/root/appsettings.json /app/appsettings.json
+
 WORKDIR "/src/SerfBot"
 RUN dotnet build "SerfBot.fsproj" -c Release -o /app/build
 
@@ -16,7 +19,4 @@ RUN dotnet publish "SerfBot.fsproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN ls -l /home/
-RUN ls -l /home/root/appsettings.json
-COPY /home/root/appsettings.json /app/appsettings.json
 ENTRYPOINT ["dotnet", "SerfBot.dll"]
