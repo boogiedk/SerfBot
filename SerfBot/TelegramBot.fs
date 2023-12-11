@@ -37,7 +37,7 @@ let streamToBase64 (stream: Stream) =
 let extractFileDataAsBase64 (fileResult: Result<File,Funogram.Types.ApiResponseError>) =
     match fileResult with
     | Ok(file) ->
-        let filePath = Option.get file.FilePath // предполагается, что у вас есть свойство "Path" в типе "File"
+        let filePath = Option.get file.FilePath
         let apiUrl = $"https://api.telegram.org/file/bot{Configuration.config.TelegramBotToken}/{filePath}"
         use httpStream = new HttpClient()
         let f = httpStream.GetStreamAsync(apiUrl) |> Async.AwaitTask  |> Async.RunSynchronously
