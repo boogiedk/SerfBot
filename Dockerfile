@@ -17,5 +17,6 @@ RUN dotnet publish "SerfBot.fsproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY /opt/serf-bot/appsettings.json ./appsettings.json
+COPY appsettings.json ./appsettings.json
+COPY root/opt/serf-bot/appsettings.json ./appsettings.json
 ENTRYPOINT ["dotnet", "SerfBot.dll"]
