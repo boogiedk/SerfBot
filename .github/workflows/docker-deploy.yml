@@ -46,5 +46,5 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/serf-bot:latest
           docker stop serf-bot || true
           docker rm serf-bot || true
-          docker run -d --name serf-bot -p 3005:3005 -v /home/user/appsettings.json:/app/appsettings.json ${{ secrets.DOCKER_USERNAME }}/serf-bot:latest
+          docker run -d --name serf-bot -p 3005:3005 -v /tmp/serf-bot/appsettings.json:/app/appsettings.json ${{ secrets.DOCKER_USERNAME }}/serf-bot:latest
         EOF
