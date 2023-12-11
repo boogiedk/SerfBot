@@ -58,7 +58,6 @@ let updateArrivedMessage (ctx: UpdateContext) =
      match ctx.Update.Message with
         | Some { MessageId = messageId; Chat = chat; Text = text; Photo = photo; Caption = caption } ->
             let user = ctx.Update.Message.Value.From.Value
-            
             let base64Img = if photo.IsSome then handleFiles (Array.last photo.Value).FileId ctx else ""
             let message = if text.IsSome then text.Value elif caption.IsSome then caption.Value else ""
             match isValidUser user.Id with
