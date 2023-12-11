@@ -51,15 +51,19 @@ let gptAnswer userQuestion =
             
             let result =
                   if completionResult.Successful then
-                      completionResult.Choices |> Seq.head |> fun c -> c.Message.Content
+                      completionResult.Choices
+                      |> Seq.head
+                      |> fun c -> c.Message.Content
                   else
                       match completionResult.Error with
                       | null ->
-                          "Unknown Error" |> logInfo
-                          raise (Exception("Unknown Error"))
+                          let errorMessage = "Unknown Error"
+                          errorMessage |> logInfo
+                          errorMessage
                       | error ->
-                          $"{error.Code} {error.Message}" |> logInfo
-                          sprintf "%s: %s" error.Code error.Message
+                          let errorMessage = $"{error.Code} {error.Message}"
+                          errorMessage |> logInfo
+                          errorMessage
 
             return result
 
