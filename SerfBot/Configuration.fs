@@ -2,7 +2,8 @@
 
 open Funogram.Telegram
 open Microsoft.Extensions.Configuration
-open Types;
+open Types
+open System
 
 module Configuration =
     let mutable configBuilder =
@@ -12,5 +13,7 @@ module Configuration =
     let config =
             configBuilder
                 .Build()
-                .Get<ApplicationConfiguration>();
+                .Get<ApplicationConfiguration>()
+                
+    let mutable startTime = DateTime.Now            
     

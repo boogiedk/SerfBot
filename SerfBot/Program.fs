@@ -1,5 +1,6 @@
 ﻿namespace SerfBot
 
+open System
 open Funogram.Api
 open Funogram.Telegram
 open Funogram.Telegram.Bot
@@ -21,7 +22,6 @@ module Program =
              
         let telegramBotConfig = {Config.defaultConfig with Token = Configuration.config.TelegramBotToken }
         let! _ = Api.deleteWebhookBase () |> api telegramBotConfig
-      
         logInfo "SerfBot start"
         return! startBot telegramBotConfig updateArrivedMessage None
       } |> Async.RunSynchronously

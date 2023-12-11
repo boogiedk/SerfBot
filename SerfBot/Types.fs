@@ -1,6 +1,10 @@
 ﻿module SerfBot.Types
 
+open System
 open Funogram.Telegram
+open Funogram.Telegram.Types
+
+let mutable internal startTime = DateTime
 
 type CityCoordinates =
     { CityName: string
@@ -29,13 +33,16 @@ type ApplicationConfiguration = {
     TelegramBotToken: string
     OpenAiApiToken: string
     UserIds: int64[]
+    StarBotDatetime: DateTime 
 }
 
 type Command =
     | Ping
     | Question of string
     | Context of string
-    | Vision of string * string
+    | Vision of string * PhotoSize array option 
     | Weather of string
+    | Uptime
+    | HelpCommands
     | Other of string
 

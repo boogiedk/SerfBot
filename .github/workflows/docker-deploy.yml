@@ -3,7 +3,12 @@ name: CI/CD Pipline
 on:
   pull_request:
     branches:
-      - master
+     - master
+    types:
+     - closed
+  check_suite:
+    types:
+     - completed
 
 jobs:
   build:

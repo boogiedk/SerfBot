@@ -1,11 +1,11 @@
 ﻿module SerfBot.OpenAiApi
 
 open OpenAI
+open OpenAI.Chat
 open OpenAI.Managers
 open OpenAI.ObjectModels
 open OpenAI.ObjectModels.RequestModels
 open SerfBot.Types
-open OpenAI.Chat
 open System
 open Log
 
@@ -77,7 +77,7 @@ let descriptionAnalyzedImage userText base64Img =
     async {
         try
             let api = OpenAIClient(Configuration.config.OpenAiApiToken)
-            let userText2 = if userText == null then "Что на фото?" else userText
+            let userText2 = if String.IsNullOrEmpty(userText) then "Что на фото?" else userText
             let messages =
                 [
                     Message(Role.System, Option.get currentContext)
