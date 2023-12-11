@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,8 +11,8 @@
         </Content>
         <Compile Include="Log.fs" />
         <Compile Include="Types.fs" />
-        <Compile Include="TelegramApi.fs" />
         <Compile Include="Configuration.fs" />
+        <Compile Include="TelegramApi.fs" />
         <Compile Include="WeatherApi.fs" />
         <Compile Include="OpenAiApi.fs" />
         <Compile Include="Commands.fs" />
