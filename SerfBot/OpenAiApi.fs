@@ -9,19 +9,15 @@ open SerfBot.Types
 open System
 open Log
 
-
-let defaultContext = "Ты персональный помощник-бот в telegram. Чаще всего тебе нужно генерировать C#, F# или SQL код, но иногда нужно и отвечать на бытовые вопросы."
+let defaultContext = "Ты персональный помощник-бот в telegram."
 let mutable currentContext = Some(defaultContext)
 
 let setupContext (newContext: string) =
     match newContext with
-    | null -> 
-        match currentContext with
-        | None -> defaultContext
-        | Some x -> x
+    | null | ""  -> 
+        currentContext <- Some defaultContext
     | _ -> 
         currentContext <- Some newContext
-        newContext
 
 let conversationGPT =
     let token = Configuration.config.OpenAiApiToken
@@ -35,11 +31,11 @@ let conversationGPT =
 let gptQuestionRequest userText =
     let messages =
             [
-                ChatMessage.FromSystem(Option.get currentContext)
-                ChatMessage.FromUser(userText)
+                ChatMessage.FromSystem(currentContext |> Option.defaultValue defaultContext)
+                ChatMessage.FromUser(userText, null)
             ] |> List.toArray
     
-    ChatCompletionCreateRequest(Messages = messages, Model = Models.Gpt_4)
+    ChatCompletionCreateRequest(Messages = messages, Model = Models.Gpt_4o_mini)
 
 let gptAnswer userQuestion =
     async {
@@ -66,7 +62,6 @@ let gptAnswer userQuestion =
                           errorMessage
 
             return result
-
         with
         | ex ->
             ex.Message |> logInfo
@@ -76,11 +71,11 @@ let gptAnswer userQuestion =
 let descriptionAnalyzedImage userText base64Img =
     async {
         try
-            let api = OpenAIClient(Configuration.config.OpenAiApiToken)
+            let api = new OpenAIClient(Configuration.config.OpenAiApiToken)
             let userText2 = if String.IsNullOrEmpty(userText) then "Что на фото?" else userText
             let messages =
                 [
-                    Message(Role.System, Option.get currentContext)
+                    Message(Role.System, currentContext |> Option.defaultValue defaultContext)
                     Message(Role.User,
                             [
                                 Content(ContentType.Text, userText2)
@@ -90,7 +85,7 @@ let descriptionAnalyzedImage userText base64Img =
             
             let result =
                 async { 
-                    let! completionResult = api.ChatEndpoint.GetCompletionAsync(ChatRequest(messages, model = "gpt-4-vision-preview", maxTokens = 500)) |> Async.AwaitTask
+                    let! completionResult = api.ChatEndpoint.GetCompletionAsync(ChatRequest(messages, model = "gpt-4o-mini", maxTokens = 500)) |> Async.AwaitTask
                     return completionResult
                 }
                 |> Async.RunSynchronously
