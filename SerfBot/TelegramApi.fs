@@ -8,7 +8,6 @@ open System.Net.Http
 open Funogram.Api
 open Funogram.Telegram.Bot
 open SerfBot.Types
-open ExtCore.Control.Collections
 
 let public sendMessageFormatted text parseMode config bot chatId =
   Req.SendMessage.Make(ChatId.Int chatId, text, parseMode = parseMode) |> bot config

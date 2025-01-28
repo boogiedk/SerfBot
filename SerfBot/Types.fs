@@ -26,8 +26,6 @@ type GPTResponse = {
     generatedText: string
 }
 
-type WeatherData = { current_weather: CurrentWeather }
-
 [<CLIMutable>]
 type ApplicationConfiguration = {
     TelegramBotToken: string
