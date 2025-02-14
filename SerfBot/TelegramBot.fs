@@ -59,4 +59,4 @@ let updateArrivedMessage (ctx: UpdateContext) =
         processIncomingMessage(ctx, messageId, chat, user, caption, photo)
     | Some { From = None } -> logInfo "Сообщение от неизвестного отправителя."
     | None -> logInfo "Ошибка: сообщение не найдено."
-    | Some _ -> failwith "todo"
+    | Some _ -> logInfo "todo"
