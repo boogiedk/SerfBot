@@ -6,6 +6,7 @@ open Funogram.Telegram.Types
 open SerfBot.Log
 open SerfBot.Types
 open SerfBot.TelegramApi
+open SerfBot.ConversationService
 
 let extractCommand (str: string) =
      match str.Split(" ", 2) with
@@ -36,6 +37,7 @@ let processIncomingMessage(ctx, messageId, chat, user: User, message, photo) =
             | "!vision" -> Vision (userMessage, photo)
             | "!help" -> HelpCommands
             | "!uptime" -> Uptime
+            | "!clear" -> ClearConversationHistory
             | "гпт" -> Question userMessage
             | _ -> Other userMessage
 

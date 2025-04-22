@@ -43,5 +43,17 @@ type Command =
     | Weather of string
     | Uptime
     | HelpCommands
+    | ClearConversationHistory
     | Other of string
+
+type ChatMessage = {
+    Role: string
+    Content: string
+    Timestamp: DateTime
+}
+
+type ConversationHistory = {
+    Messages: ChatMessage list
+    MaxHistorySize: int
+}
 

@@ -12,6 +12,7 @@
         <Compile Include="Log.fs" />
         <Compile Include="Types.fs" />
         <Compile Include="Configuration.fs" />
+        <Compile Include="ConversationService.fs" />
         <Compile Include="TelegramApi.fs" />
         <Compile Include="OpenAiApi.fs" />
         <Compile Include="Commands.fs" />

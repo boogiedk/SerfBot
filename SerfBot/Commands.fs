@@ -4,6 +4,7 @@ open System
 open SerfBot.OpenAiApi;
 open SerfBot.Types
 open SerfBot.Configuration
+open SerfBot.ConversationService
 
 let commandDescriptions =
     "`!ping` - команда проверки связи\n" +
@@ -11,6 +12,7 @@ let commandDescriptions =
     "`!vision` - команда анализа присланной картинки\n" +
     "`!help` - команда вывода списка команд\n" +
     "`!uptime` - команда показа количества дней работы бота\n" +
+    "`!clear` - команда очистки истории переписки\n" +
     "`гпт` - команда для вопроса в ChatGpt\n";
 
 let commandHandler command =
@@ -22,9 +24,10 @@ let commandHandler command =
         |> Async.RunSynchronously
         |> Ok
     | Vision (_, None) | Vision (_, Some [||]) -> Error "Необходимо отправить изображение для анализа."
-    | Context userText -> setupContext userText |> ignore; Ok "Контекст сменен"
+    | Context userText -> setupContext userText; Ok "Контекст сменен"
     | Question userText -> gptAnswer userText |> Async.RunSynchronously |> Ok
     | Uptime -> Ok $"Bot active is {(DateTime.Now.Date - startTime.Date).Days} days"
+    | ClearConversationHistory -> conversationService.ClearHistory(); Ok "История переписки очищена"
     | HelpCommands -> Ok commandDescriptions
     | _ -> Error "Некорректная команда"
     
