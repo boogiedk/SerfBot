@@ -27,7 +27,7 @@ let processCommand (ctx: UpdateContext, command: MessageReplayCommand) =
 let processIncomingMessage(ctx, messageId, chat, user: User, message, photo) =
     match isValidUser user.Id with
     | Some () ->
-        logInfo $"Message from user {Option.get user.Username} received: {message}"
+        logInfo $"Message from user {Option.get user.Username} received: {message} "
         let command, userMessage = extractCommand message
         let commandType =
             match command with
