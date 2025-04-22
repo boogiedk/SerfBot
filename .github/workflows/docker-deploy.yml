@@ -1,4 +1,4 @@
-name: CI/CD Pipline
+name: CI/CD Pipline SerfBot
 
 on:
   pull_request:
@@ -6,10 +6,15 @@ on:
      - master
     types:
      - closed
+     
   check_suite:
     types:
      - completed
-
+   
+    push:
+        branches:
+            - master
+    
 jobs:
   build:
     runs-on: ubuntu-latest
