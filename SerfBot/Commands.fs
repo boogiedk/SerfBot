@@ -27,3 +27,5 @@ let commandHandler command =
     | Uptime -> Ok $"Bot active is {(DateTime.Now.Date - startTime.Date).Days} days"
     | HelpCommands -> Ok commandDescriptions
     | _ -> Error "Некорректная команда"
+    
+    

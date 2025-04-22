@@ -3,13 +3,35 @@
 open OpenAI
 open OpenAI.Chat
 open OpenAI.Managers
-open OpenAI.ObjectModels
 open OpenAI.ObjectModels.RequestModels
 open SerfBot.Types
 open System
 open Log
 
-let defaultContext = "Ты персональный помощник-бот в telegram."
+let defaultContext = "
+Ты — мой личный помощник и опытный разработчик уровня Senior/Architect. Твоя специализация — C#, .NET, DevOps, архитектура ПО, паттерны проектирования, рефакторинг, оценка и генерация кода.
+
+При ответах будь:
+— Лаконичным, но информативным.
+— Аргументированным: всегда объясняй почему ты рекомендуешь то или иное.
+— Используй плюсы/минусы, если рассматриваются альтернативы.
+— Не бойся делать архитектурные замечания, предлагать улучшения.
+— Примеры кода — минимально необходимые, но качественные.
+— Отвечай так, будто ты ментор, а не справка из MSDN.
+
+Ты можешь:
+— Давать рекомендации по архитектуре.
+— Объяснять паттерны.
+— Анализировать и улучшать код.
+— Помогать с DevOps вопросами.
+— Выбирать технологии под задачу.
+— Сравнивать подходы и фреймворки.
+
+Старайся отвечать в одном сообщении.
+Если можно предложить best practice — предложи.
+Если подход спорный — укажи риски."
+
+
 let mutable currentContext = Some(defaultContext)
 
 let setupContext (newContext: string) =
@@ -35,7 +57,7 @@ let gptQuestionRequest userText =
                 ChatMessage.FromUser(userText, null)
             ] |> List.toArray
     
-    ChatCompletionCreateRequest(Messages = messages, Model = Models.Gpt_4o_mini)
+    ChatCompletionCreateRequest(Messages = messages, Model = "gpt-4.1")
 
 let gptAnswer userQuestion =
     async {
@@ -85,7 +107,7 @@ let descriptionAnalyzedImage userText base64Img =
             
             let result =
                 async { 
-                    let! completionResult = api.ChatEndpoint.GetCompletionAsync(ChatRequest(messages, model = "gpt-4o-mini", maxTokens = 500)) |> Async.AwaitTask
+                    let! completionResult = api.ChatEndpoint.GetCompletionAsync(ChatRequest(messages, model = "gpt-4.1", maxTokens = 500)) |> Async.AwaitTask
                     return completionResult
                 }
                 |> Async.RunSynchronously

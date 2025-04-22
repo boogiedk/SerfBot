@@ -16,6 +16,7 @@
         <Compile Include="OpenAiApi.fs" />
         <Compile Include="Commands.fs" />
         <Compile Include="TelegramBot.fs" />
+        <Compile Include="TelegramSink.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 
@@ -23,17 +24,18 @@
       <PackageReference Include="Betalgo.OpenAI" Version="8.7.2" />
       <PackageReference Include="Betalgo.OpenAI.Utilities" Version="8.1.0" />
       <PackageReference Include="FSharp.Configuration" Version="2.0.0" />
-      <PackageReference Include="Funogram" Version="2.0.7" />
-      <PackageReference Include="Funogram.Telegram" Version="6.7.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-      <PackageReference Include="OpenAI-DotNet" Version="8.4.2" />
-      <PackageReference Include="Serilog" Version="3.0.1" />
-      <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
-      <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+      <PackageReference Include="Funogram" Version="3.0.2" />
+      <PackageReference Include="Funogram.Telegram" Version="9.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
+      <PackageReference Include="OpenAI-DotNet" Version="8.6.3" />
+      <PackageReference Include="Serilog" Version="4.2.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
       <PackageReference Include="System.Net.Http" Version="4.3.4" />
-      <PackageReference Include="System.Text.Json" Version="9.0.1" />
-      <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+      <PackageReference Include="System.Text.Json" Version="9.0.4" />
+      <PackageReference Include="Telegram.Bot" Version="22.5.1" />
+      <PackageReference Update="FSharp.Core" Version="9.0.202" />
     </ItemGroup>
 
 

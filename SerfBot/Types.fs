@@ -32,6 +32,7 @@ type ApplicationConfiguration = {
     OpenAiApiToken: string
     UserIds: int64[]
     StarBotDatetime: DateTime 
+    LogChannelId: string
 }
 
 type Command =
