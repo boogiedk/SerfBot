@@ -33,11 +33,13 @@ type ApplicationConfiguration = {
     UserIds: int64[]
     StarBotDatetime: DateTime 
     LogChannelId: string
+    Gpt2ApiUrl: string
 }
 
 type Command =
     | Ping
     | Question of string
+    | Gpt2Question of string
     | Context of string
     | Vision of string * PhotoSize array option 
     | Weather of string

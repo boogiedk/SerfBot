@@ -3,18 +3,16 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
-    </PropertyGroup>
-
-    <ItemGroup>
+    </PropertyGroup>    <ItemGroup>
         <Content Include="appsettings.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Compile Include="Log.fs" />
         <Compile Include="Types.fs" />
         <Compile Include="Configuration.fs" />
-        <Compile Include="ConversationService.fs" />
         <Compile Include="TelegramApi.fs" />
         <Compile Include="OpenAiApi.fs" />
+        <Compile Include="Gpt2Api.fs" />
         <Compile Include="Commands.fs" />
         <Compile Include="TelegramBot.fs" />
         <Compile Include="TelegramSink.fs" />

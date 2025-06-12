@@ -6,15 +6,15 @@ open Funogram.Telegram.Types
 open SerfBot.Log
 open SerfBot.Types
 open SerfBot.TelegramApi
-open SerfBot.ConversationService
 
 let extractCommand (str: string) =
-     match str.Split(" ", 2) with
-     | [| command; inputText |] ->
-         (command, inputText)
-     | [| command; |] ->
-         (command, null)
-     | _ -> failwith "todo"
+    if str.StartsWith("!") || str.StartsWith("гпт") then
+        match str.Split(" ", 2) with
+        | [| command; inputText |] -> (command, inputText)
+        | [| command; |] -> (command, null)
+        | _ -> failwith "todo"
+    else
+        ("default", str)
 
 let isValidUser (userId: int64) =
     if Array.contains userId Configuration.config.UserIds then Some ()
@@ -39,6 +39,8 @@ let processIncomingMessage(ctx, messageId, chat, user: User, message, photo) =
             | "!uptime" -> Uptime
             | "!clear" -> ClearConversationHistory
             | "гпт" -> Question userMessage
+            | "гпт2" -> Gpt2Question userMessage
+            | "default" -> Gpt2Question userMessage
             | _ -> Other userMessage
 
         let replyText =

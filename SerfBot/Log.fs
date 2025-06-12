@@ -9,5 +9,6 @@ module Log =
     let logInfo (str: string) = logger.Information str
     let logExn (exn: exn) (msg: string)  = logger.Error(exn, msg)
     let logErr (msg: string) = logger.Error msg
+    let logError (msg: string) = logger.Error msg
     let logDbg (str: string) = logger.Debug str
     let logFatal (msg: string) (exn: exn) = logger.Fatal(exn, msg)

@@ -5,9 +5,8 @@ open OpenAI.Chat
 open OpenAI.Managers
 open OpenAI.ObjectModels.RequestModels
 open SerfBot.Types
-open SerfBot.ConversationService
 open System
-open Log
+open SerfBot.Log
 
 let defaultContext = "
     Ты — мой личный помощник и опытный разработчик уровня Senior/Architect. Твоя специализация — C#, .NET, DevOps, архитектура ПО, паттерны проектирования, рефакторинг, оценка и генерация кода.
@@ -54,11 +53,9 @@ let gptAnswer userQuestion =
     async {
         try
             let conv = conversationGPT
-            let historyMessages = conversationService.GetHistoryMessages()
             let messages =
                 [|
                     ChatMessage.FromSystem(currentContext |> Option.defaultValue defaultContext)
-                    yield! historyMessages
                     ChatMessage.FromUser(userQuestion, null)
                 |]
             let request = ChatCompletionCreateRequest(Messages = messages, Model = "gpt-4.1")
@@ -70,8 +67,6 @@ let gptAnswer userQuestion =
                       let answer = completionResult.Choices
                                   |> Seq.head
                                   |> fun c -> c.Message.Content
-                      conversationService.AddMessageToHistory "user" userQuestion
-                      conversationService.AddMessageToHistory "assistant" answer
                       answer
                   else
                       match completionResult.Error with
