@@ -38,6 +38,9 @@ let processIncomingMessage(ctx, messageId, chat, user: User, message, photo) =
             | "!help" -> HelpCommands
             | "!uptime" -> Uptime
             | "!clear" -> ClearConversationHistory
+            | "!reset" -> ResetHistory
+            | "!models" -> GetModels
+            | "!set_model" -> SetModel userMessage
             | "гпт" -> Question userMessage
             | "гпт2" -> Gpt2Question userMessage
             | "default" -> Gpt2Question userMessage

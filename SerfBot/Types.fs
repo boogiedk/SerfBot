@@ -34,6 +34,7 @@ type ApplicationConfiguration = {
     StarBotDatetime: DateTime 
     LogChannelId: string
     Gpt2ApiUrl: string
+    Gpt2ApiToken: string
 }
 
 type Command =
@@ -46,6 +47,9 @@ type Command =
     | Uptime
     | HelpCommands
     | ClearConversationHistory
+    | ResetHistory
+    | GetModels
+    | SetModel of string
     | Other of string
 
 type ChatMessage = {

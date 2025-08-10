@@ -13,6 +13,9 @@ let commandDescriptions =
     "`!help` - команда вывода списка команд\n" +
     "`!uptime` - команда показа количества дней работы бота\n" +
     "`!clear` - команда очистки истории переписки\n" +
+    "`!reset` - команда сброса истории диалога в GPT2\n" +
+    "`!models` - команда получения списка доступных моделей\n" +
+    "`!set_model` <название> - команда установки модели GPT2\n" +
     "`гпт` - команда для вопроса в ChatGPT\n" +
     "`гпт2` - команда для вопроса к локальному GPT2 API\n\n" +
     "**Обычные сообщения** (без ! в начале) автоматически обрабатываются через локальный GPT2 API.";
@@ -29,6 +32,18 @@ let commandHandler command =
     | Context userText -> setupContext userText; Ok "Контекст сменен"
     | Question userText -> gptAnswer userText |> Async.RunSynchronously |> Ok
     | Gpt2Question userText -> gpt2Answer userText |> Async.RunSynchronously |> Ok
+    | ResetHistory -> 
+        match resetHistory () |> Async.RunSynchronously with
+        | Ok message -> Ok message
+        | Error errorMsg -> Error errorMsg
+    | GetModels ->
+        match getModels () |> Async.RunSynchronously with
+        | Ok message -> Ok message
+        | Error errorMsg -> Error errorMsg
+    | SetModel modelName ->
+        match setModel modelName |> Async.RunSynchronously with
+        | Ok message -> Ok message
+        | Error errorMsg -> Error errorMsg
     | Uptime -> Ok $"Bot active is {(DateTime.Now.Date - startTime.Date).Days} days"
     | HelpCommands -> Ok commandDescriptions
     | _ -> Error "Некорректная команда"
